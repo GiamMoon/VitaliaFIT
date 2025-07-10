@@ -1,4 +1,5 @@
-import { Injectable } from '@nestjs/common';
+// CORRECCIÓN: Se añade NotFoundException
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateRoutineDto } from './dto/create-routine.dto';
@@ -11,7 +12,7 @@ export class RoutinesService {
     private readonly routineRepository: Repository<Routine>,
   ) {}
 
-create(createRoutineDto: CreateRoutineDto) {
+  create(createRoutineDto: CreateRoutineDto) {
     const exercises = createRoutineDto.exerciseIds.map(id => ({ id }));
     const newRoutine = this.routineRepository.create({
       ...createRoutineDto,
@@ -23,11 +24,18 @@ create(createRoutineDto: CreateRoutineDto) {
   findAll() {
     return this.routineRepository.find();
   }
-// Nuevo método para encontrar una rutina con sus ejercicios
-  findOne(id: number) {
-    return this.routineRepository.findOne({
+
+  // CORRECCIÓN: Método más robusto con manejo de errores explícito
+  async findOne(id: number) {
+    const routine = await this.routineRepository.findOne({
       where: { id },
       relations: ['exercises'], // ¡Importante! Carga la relación
     });
+
+    if (!routine) {
+      throw new NotFoundException(`Routine with ID #${id} not found`);
+    }
+
+    return routine;
   }
 }
