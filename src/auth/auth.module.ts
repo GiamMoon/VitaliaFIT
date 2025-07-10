@@ -1,21 +1,21 @@
 import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
-import { UsersModule } from 'src/users/users.module';
+import { UsersModule } from 'src/users/users.module'; // Importa el módulo completo
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './strategies/jwt.strategy';
 
 @Module({
   imports: [
-    UsersModule,
+    UsersModule, // Asegúrate de que UsersModule está aquí
     PassportModule,
     JwtModule.register({
-      secret: 'VITALIAFIT_SECRET_KEY', // ¡En un proyecto real, esto debe ser una variable de entorno!
-      signOptions: { expiresIn: '1d' }, // El token expira en 1 día
+      secret: 'VITALIAFIT_SECRET_KEY',
+      signOptions: { expiresIn: '1d' },
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy], // AuthService y JwtStrategy
+  providers: [AuthService, JwtStrategy],
 })
 export class AuthModule {}

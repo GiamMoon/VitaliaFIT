@@ -29,8 +29,8 @@ import { WorkoutHistory } from './workout-history/entities/workout-history.entit
         synchronize: true,
       }),
     }),
-    UsersModule,
-    AuthModule,
+    UsersModule, // UsersModule debe estar aquí
+    AuthModule,  // AuthModule debe estar aquí
     ExercisesModule,
     RoutinesModule,
     WorkoutHistoryModule,
