@@ -1,0 +1,13 @@
+import { Module } from '@nestjs/common';
+import { RoutinesService } from './routines.service';
+import { RoutinesController } from './routines.controller';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Routine } from './entities/routine.entity';
+
+@Module({
+  // Y aquí también:
+  imports: [TypeOrmModule.forFeature([Routine])],
+  controllers: [RoutinesController],
+  providers: [RoutinesService],
+})
+export class RoutinesModule {}
