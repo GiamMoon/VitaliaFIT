@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, ParseIntPipe } from '@nestjs/common';
 import { RoutinesService } from './routines.service';
 import { CreateRoutineDto } from './dto/create-routine.dto';
 
@@ -14,5 +14,10 @@ export class RoutinesController {
   @Get()
   findAll() {
     return this.routinesService.findAll();
+  }
+
+  @Get(':id') // Ruta para obtener una rutina por su ID, ej: /routines/1
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.routinesService.findOne(id);
   }
 }

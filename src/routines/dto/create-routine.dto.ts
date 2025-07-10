@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsArray, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class CreateRoutineDto {
   @IsNotEmpty()
@@ -12,4 +12,8 @@ export class CreateRoutineDto {
   @IsNotEmpty()
   @IsNumber()
   durationMinutes: number;
+
+  @IsArray()
+  @IsNumber({}, { each: true })
+  exerciseIds: number[];
 }
