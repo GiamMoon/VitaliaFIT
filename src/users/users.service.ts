@@ -34,17 +34,17 @@ export class UsersService {
       return user;
     }
 
-    async update(id: number, updateUserDto: UpdateUserDto) {
-      const user = await this.findOne(id);
-      this.userRepository.merge(user, updateUserDto);
-      return this.userRepository.save(user);
-    }
+  async update(id: number, updateDto: Partial<User>) {
+    const user = await this.findOne(id);
+    this.userRepository.merge(user, updateDto);
+    return this.userRepository.save(user);
+  }
 
-    async remove(id: number) {
-      const user = await this.findOne(id);
-      await this.userRepository.remove(user);
-      return { message: `User with ID #${id} has been removed` };
-    }
+ async remove(id: number) {
+    const user = await this.findOne(id);
+    await this.userRepository.remove(user);
+    return { message: `User with ID #${id} has been removed` };
+  }
 
     async createFromAdmin(createUserDto: CreateUserAdminDto) {
     const userExists = await this.findOneByEmail(createUserDto.email);

@@ -28,4 +28,14 @@ export class User {
     default: Role.User, // Por defecto, todos son usuarios normales
   })
   role: Role;
+
+  // Nuevas columnas para las preferencias del onboarding
+  @Column({ type: 'varchar', nullable: true })
+  goal?: string; // Objetivo (ej: 'Perder peso')
+
+  @Column({ type: 'varchar', nullable: true })
+  experience?: string; // Nivel de experiencia (ej: 'Principiante')
+
+  @Column({ type: 'varchar', nullable: true })
+  preferences?: string; // Preferencia de ejercicio (ej: 'Yoga')
 }

@@ -12,7 +12,8 @@ import { Exercise } from './exercises/entities/exercise.entity';
 import { Routine } from './routines/entities/routine.entity';
 import { WorkoutHistoryModule } from './workout-history/workout-history.module';
 import { WorkoutHistory } from './workout-history/entities/workout-history.entity';
-import { AdminModule } from './admin/admin.module'; // Importa el nuevo módulo
+import { AdminModule } from './admin/admin.module';
+import { ProfileModule } from './profile/profile.module'; // Importa el nuevo módulo
 
 @Module({
   imports: [
@@ -35,7 +36,8 @@ import { AdminModule } from './admin/admin.module'; // Importa el nuevo módulo
     ExercisesModule,
     RoutinesModule,
     WorkoutHistoryModule,
-    AdminModule, // Añade el AdminModule aquí
+    AdminModule,
+    ProfileModule, // Añade el ProfileModule aquí
   ],
   controllers: [AppController],
   providers: [AppService],
