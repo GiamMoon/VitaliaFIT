@@ -14,10 +14,11 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: { sub: number; email: string }) {
-    const user = await this.usersService.findOneByEmail(payload.email);
-    if (!user) {
-      throw new UnauthorizedException();
-    }
-    return user; // NestJS inyectará este objeto 'user' en la request
+     const user = await this.usersService.findOneByEmail(payload.email);
+      if (!user) {
+        throw new UnauthorizedException();
+      }
+      // Devolvemos el usuario completo, que ya incluye el rol
+      return user;
   }
 }

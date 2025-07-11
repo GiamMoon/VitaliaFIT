@@ -22,7 +22,7 @@ export class AuthService {
     // Excluimos la contraseña del objeto de usuario
     const { password, ...result } = user;
 
-    const payload = { sub: user.id, email: user.email };
+    const payload = { sub: user.id, email: user.email, role: user.role };
     return {
       ...result,
       accessToken: this.jwtService.sign(payload),

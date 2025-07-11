@@ -12,6 +12,7 @@ import { Exercise } from './exercises/entities/exercise.entity';
 import { Routine } from './routines/entities/routine.entity';
 import { WorkoutHistoryModule } from './workout-history/workout-history.module';
 import { WorkoutHistory } from './workout-history/entities/workout-history.entity';
+import { AdminModule } from './admin/admin.module'; // Importa el nuevo módulo
 
 @Module({
   imports: [
@@ -29,11 +30,12 @@ import { WorkoutHistory } from './workout-history/entities/workout-history.entit
         synchronize: true,
       }),
     }),
-    UsersModule, // UsersModule debe estar aquí
-    AuthModule,  // AuthModule debe estar aquí
+    UsersModule,
+    AuthModule,
     ExercisesModule,
     RoutinesModule,
     WorkoutHistoryModule,
+    AdminModule, // Añade el AdminModule aquí
   ],
   controllers: [AppController],
   providers: [AppService],
