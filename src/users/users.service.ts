@@ -3,6 +3,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { UpdateUserDto } from './dto/update-user.dto'; // Importar
+import { CreateUserAdminDto } from './dto/create-user-admin.dto';
+import * as bcrypt from 'bcrypt';
+import { BadRequestException } from '@nestjs/common';
 
 @Injectable()
 export class UsersService {
@@ -42,6 +45,20 @@ export class UsersService {
       await this.userRepository.remove(user);
       return { message: `User with ID #${id} has been removed` };
     }
+
+    async createFromAdmin(createUserDto: CreateUserAdminDto) {
+    const userExists = await this.findOneByEmail(createUserDto.email);
+    if (userExists) {
+      throw new BadRequestException('El correo electrónico ya está en uso');
+    }
+
+    const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
+    const newUser = this.userRepository.create({
+      ...createUserDto,
+      password: hashedPassword,
+    });
+    return this.userRepository.save(newUser);
   }
+}
 
 
