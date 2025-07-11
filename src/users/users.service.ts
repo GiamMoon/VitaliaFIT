@@ -12,13 +12,11 @@ export class UsersService {
     private readonly userRepository: Repository<User>,
   ) {}
 
-  // Método para el registro de usuarios desde la app
   async create(user: Partial<User>): Promise<User> {
     const newUser = this.userRepository.create(user);
     return this.userRepository.save(newUser);
   }
 
-  // Método para crear usuarios desde el panel de admin
   async createFromAdmin(createUserDto: CreateUserAdminDto) {
     const userExists = await this.findOneByEmail(createUserDto.email);
     if (userExists) {
@@ -49,10 +47,21 @@ export class UsersService {
     return user;
   }
 
+  // CORRECCIÓN: Usamos el método `preload` para una actualización más segura y robusta.
   async update(id: number, updateDto: Partial<User>) {
-    await this.findOne(id);
-    await this.userRepository.update(id, updateDto);
-    return this.findOne(id);
+    // Preload busca el usuario por ID y fusiona los nuevos datos del DTO.
+    const userToUpdate = await this.userRepository.preload({
+      id: id,
+      ...updateDto,
+    });
+
+    // Si preload no encuentra el usuario, devuelve undefined.
+    if (!userToUpdate) {
+      throw new NotFoundException(`User with ID #${id} not found`);
+    }
+
+    // Guardamos la entidad ya fusionada.
+    return this.userRepository.save(userToUpdate);
   }
 
   async remove(id: number) {
