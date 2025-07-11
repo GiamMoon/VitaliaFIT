@@ -12,7 +12,13 @@ export class UsersService {
     private readonly userRepository: Repository<User>,
   ) {}
 
-  // ... (métodos createFromAdmin, findOneByEmail, findAll se mantienen igual)
+  // Método para el registro de usuarios desde la app
+  async create(user: Partial<User>): Promise<User> {
+    const newUser = this.userRepository.create(user);
+    return this.userRepository.save(newUser);
+  }
+
+  // Método para crear usuarios desde el panel de admin
   async createFromAdmin(createUserDto: CreateUserAdminDto) {
     const userExists = await this.findOneByEmail(createUserDto.email);
     if (userExists) {
@@ -43,13 +49,9 @@ export class UsersService {
     return user;
   }
 
-  // CORRECCIÓN: Usamos un método de actualización más directo y robusto.
   async update(id: number, updateDto: Partial<User>) {
-    // Primero, nos aseguramos de que el usuario exista para lanzar un 404 si no.
     await this.findOne(id);
-    // Luego, ejecutamos la operación de actualización directa en la base de datos.
     await this.userRepository.update(id, updateDto);
-    // Devolvemos el usuario actualizado para confirmar los cambios.
     return this.findOne(id);
   }
 
