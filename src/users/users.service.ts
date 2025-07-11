@@ -1,11 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
-import { UpdateUserDto } from './dto/update-user.dto'; // Importar
 import { CreateUserAdminDto } from './dto/create-user-admin.dto';
 import * as bcrypt from 'bcrypt';
-import { BadRequestException } from '@nestjs/common';
 
 @Injectable()
 export class UsersService {
@@ -14,39 +12,8 @@ export class UsersService {
     private readonly userRepository: Repository<User>,
   ) {}
 
-  async create(user: Partial<User>): Promise<User> {
-    const newUser = this.userRepository.create(user);
-    return this.userRepository.save(newUser);
-  }
-
-  async findOneByEmail(email: string): Promise<User | null> {
-    return this.userRepository.findOne({ where: { email } });
-  }
-
-  findAll() {
-  return this.userRepository.find();
-}
-  async findOne(id: number) {
-      const user = await this.userRepository.findOneBy({ id });
-      if (!user) {
-        throw new NotFoundException(`User with ID #${id} not found`);
-      }
-      return user;
-    }
-
-  async update(id: number, updateDto: Partial<User>) {
-    const user = await this.findOne(id);
-    this.userRepository.merge(user, updateDto);
-    return this.userRepository.save(user);
-  }
-
- async remove(id: number) {
-    const user = await this.findOne(id);
-    await this.userRepository.remove(user);
-    return { message: `User with ID #${id} has been removed` };
-  }
-
-    async createFromAdmin(createUserDto: CreateUserAdminDto) {
+  // ... (métodos createFromAdmin, findOneByEmail, findAll se mantienen igual)
+  async createFromAdmin(createUserDto: CreateUserAdminDto) {
     const userExists = await this.findOneByEmail(createUserDto.email);
     if (userExists) {
       throw new BadRequestException('El correo electrónico ya está en uso');
@@ -59,6 +26,36 @@ export class UsersService {
     });
     return this.userRepository.save(newUser);
   }
+
+  findOneByEmail(email: string) {
+    return this.userRepository.findOne({ where: { email } });
+  }
+
+  findAll() {
+    return this.userRepository.find();
+  }
+
+  async findOne(id: number) {
+    const user = await this.userRepository.findOneBy({ id });
+    if (!user) {
+      throw new NotFoundException(`User with ID #${id} not found`);
+    }
+    return user;
+  }
+
+  // CORRECCIÓN: Usamos un método de actualización más directo y robusto.
+  async update(id: number, updateDto: Partial<User>) {
+    // Primero, nos aseguramos de que el usuario exista para lanzar un 404 si no.
+    await this.findOne(id);
+    // Luego, ejecutamos la operación de actualización directa en la base de datos.
+    await this.userRepository.update(id, updateDto);
+    // Devolvemos el usuario actualizado para confirmar los cambios.
+    return this.findOne(id);
+  }
+
+  async remove(id: number) {
+    const user = await this.findOne(id);
+    await this.userRepository.remove(user);
+    return { message: `User with ID #${id} has been removed` };
+  }
 }
-
-

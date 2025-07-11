@@ -12,7 +12,6 @@ export class ProfileController {
   @Patch('preferences')
   updatePreferences(@Req() req: Request, @Body() updatePreferencesDto: UpdatePreferencesDto) {
     const user = req.user as { id: number };
-    // Ahora esta llamada es válida porque update() acepta un objeto parcial
     return this.usersService.update(user.id, updatePreferencesDto);
   }
 }

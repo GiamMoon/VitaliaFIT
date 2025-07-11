@@ -13,21 +13,21 @@ export class User {
   @Column()
   password: string;
 
-  @Column({ name: 'full_name' }) // Mapea a la columna 'full_name'
+  @Column({ name: 'full_name' })
   fullName: string;
 
   @CreateDateColumn({ name: 'created_at', type: 'timestamp' })
   createdAt: Date;
 
-  @OneToMany(() => WorkoutHistory, (history) => history.user)
-  workoutHistory: WorkoutHistory[];
-
   @Column({
     type: 'enum',
     enum: Role,
-    default: Role.User, // Por defecto, todos son usuarios normales
+    default: Role.User,
   })
   role: Role;
+
+  @OneToMany(() => WorkoutHistory, (history) => history.user)
+  workoutHistory: WorkoutHistory[];
 
   // Nuevas columnas para las preferencias del onboarding
   @Column({ type: 'varchar', nullable: true })
