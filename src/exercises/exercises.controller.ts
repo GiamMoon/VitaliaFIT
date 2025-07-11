@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, UseGuards, Query } from '@nestjs/common';
 import { ExercisesService } from './exercises.service';
 import { CreateExerciseDto } from './dto/create-exercise.dto';
 import { UpdateExerciseDto } from './dto/update-exercise.dto';
@@ -18,9 +18,9 @@ export class ExercisesController {
     return this.exercisesService.create(createExerciseDto);
   }
 
-  @Get()
-  findAll() {
-    return this.exercisesService.findAll();
+@Get()
+  findAll(@Query('search') searchTerm?: string) {
+    return this.exercisesService.findAll(searchTerm);
   }
 
   @Get(':id')
@@ -43,4 +43,6 @@ export class ExercisesController {
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.exercisesService.remove(id);
   }
+
+  
 }

@@ -23,4 +23,7 @@ export class Routine {
   @ManyToMany(() => Exercise)
   @JoinTable() // TypeORM creará la tabla de unión automáticamente
   exercises: Exercise[];
+
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  imageUrl: string;
 }

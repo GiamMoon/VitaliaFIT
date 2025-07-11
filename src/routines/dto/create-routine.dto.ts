@@ -1,4 +1,4 @@
-import { IsArray, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsArray, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreateRoutineDto {
   @IsNotEmpty()
@@ -16,4 +16,8 @@ export class CreateRoutineDto {
   @IsArray()
   @IsNumber({}, { each: true })
   exerciseIds: number[];
+
+  @IsString()
+  @IsOptional()
+  imageUrl?: string;
 }

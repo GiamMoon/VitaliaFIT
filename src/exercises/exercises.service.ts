@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm'; // Importar ILike
 import { CreateExerciseDto } from './dto/create-exercise.dto';
 import { UpdateExerciseDto } from './dto/update-exercise.dto'; // Importar
 import { Exercise } from './entities/exercise.entity';
@@ -17,7 +17,12 @@ export class ExercisesService {
     return this.exerciseRepository.save(newExercise);
   }
 
-  findAll() {
+findAll(searchTerm?: string) {
+    if (searchTerm) {
+      return this.exerciseRepository.find({
+        where: { name: ILike(`%${searchTerm}%`) },
+      });
+    }
     return this.exerciseRepository.find();
   }
 
@@ -43,4 +48,6 @@ export class ExercisesService {
     await this.exerciseRepository.remove(exercise);
     return { message: `Exercise with ID #${id} has been removed` };
   }
+
+  
 }
