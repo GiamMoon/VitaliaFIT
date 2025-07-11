@@ -47,21 +47,19 @@ export class UsersService {
     return user;
   }
 
-  // CORRECCIÓN: Usamos el método `preload` para una actualización más segura y robusta.
+  // CORRECCIÓN DEFINITIVA: Usamos el método .update() directo.
   async update(id: number, updateDto: Partial<User>) {
-    // Preload busca el usuario por ID y fusiona los nuevos datos del DTO.
-    const userToUpdate = await this.userRepository.preload({
-      id: id,
-      ...updateDto,
-    });
+    // El método .update() de TypeORM ejecuta una consulta UPDATE directa.
+    // Es más eficiente y menos propenso a errores para actualizaciones parciales.
+    const result = await this.userRepository.update(id, updateDto);
 
-    // Si preload no encuentra el usuario, devuelve undefined.
-    if (!userToUpdate) {
+    // Verificamos si alguna fila fue afectada para saber si el usuario existía.
+    if (result.affected === 0) {
       throw new NotFoundException(`User with ID #${id} not found`);
     }
 
-    // Guardamos la entidad ya fusionada.
-    return this.userRepository.save(userToUpdate);
+    // Devolvemos el usuario actualizado para confirmar los cambios.
+    return this.findOne(id);
   }
 
   async remove(id: number) {
