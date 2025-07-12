@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, UseGuards } from '@nestjs/common';
+import { Controller, Get,Query, Post, Body, Patch, Param, Delete, ParseIntPipe, UseGuards } from '@nestjs/common';
 import { RoutinesService } from './routines.service';
 import { CreateRoutineDto } from './dto/create-routine.dto';
 import { UpdateRoutineDto } from './dto/update-routine.dto';
@@ -12,10 +12,9 @@ import { Role } from 'src/users/enums/role.enum';
 export class RoutinesController {
   constructor(private readonly routinesService: RoutinesService) {}
 
-  // Esta ruta ahora es pública, cualquiera puede ver las rutinas
   @Get()
-  findAll() {
-    return this.routinesService.findAll();
+  findAll(@Query('search') searchTerm?: string) {
+    return this.routinesService.findAll(searchTerm);
   }
 
   // Las siguientes rutas SÍ necesitan protección

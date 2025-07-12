@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm'; // Importar ILike
 import { CreateRoutineDto } from './dto/create-routine.dto';
 import { UpdateRoutineDto } from './dto/update-routine.dto';
 import { Routine } from './entities/routine.entity';
@@ -22,9 +22,12 @@ export class RoutinesService {
     return this.routineRepository.save(newRoutine);
   }
 
-  findAll() {
-    // Incluimos la cuenta de ejercicios para mostrarla en la tabla
-    return this.routineRepository.find({ relations: ['exercises'] });
+findAll(searchTerm?: string) {
+    const findOptions = {
+      relations: ['exercises'],
+      where: searchTerm ? { name: ILike(`%${searchTerm}%`) } : {},
+    };
+    return this.routineRepository.find(findOptions);
   }
 
   async findOne(id: number) {
