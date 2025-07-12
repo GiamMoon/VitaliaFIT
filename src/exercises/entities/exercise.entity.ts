@@ -1,6 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+// src/exercises/entities/exercise.entity.ts
+import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Routine } from 'src/routines/entities/routine.entity';
-import { ManyToMany } from 'typeorm';
 
 @Entity('exercises')
 export class Exercise {
@@ -15,6 +15,10 @@ export class Exercise {
 
   @Column({ name: 'video_url' })
   videoUrl: string;
+
+  // Nueva columna para la imagen
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  imageUrl: string;
 
   @ManyToMany(() => Routine, (routine) => routine.exercises)
   routines: Routine[];
