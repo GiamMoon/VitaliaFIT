@@ -64,24 +64,16 @@ findAll(searchTerm?: string) {
     return { message: `Routine with ID #${id} has been removed` };
   }
 
-  // Nuevo método para encontrar rutinas recomendadas
-  findRecommended(user: User) {
-    // Creamos una lista de términos de búsqueda a partir de las preferencias del usuario
-    const searchTerms = [user.goal, user.experience, user.preferences].filter(Boolean); // Filtra valores null o undefined
-
-    if (searchTerms.length === 0) {
-      // Si no hay preferencias, devuelve las 5 rutinas más recientes como fallback
-      return this.routineRepository.find({
-        order: { id: 'DESC' },
-        take: 5,
-        relations: ['exercises'],
-      });
-    }
-
-    // Busca rutinas donde el nombre contenga CUALQUIERA de los términos de búsqueda
-    return this.routineRepository.find({
-      where: searchTerms.map(term => ({ name: ILike(`%${term}%`) })),
-      relations: ['exercises'],
-    });
-  }
+findRecommended(user: User) {
+  // Busca rutinas donde las categorías coincidan con las preferencias del usuario
+  return this.routineRepository.find({
+    where: [
+      { goal: user.goal },
+      { experience: user.experience },
+      { type: user.preferences },
+    ],
+    relations: ['exercises'],
+    take: 10, // Tomamos hasta 10 rutinas que coincidan
+  });
+}
 }

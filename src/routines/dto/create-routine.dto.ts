@@ -20,4 +20,17 @@ export class CreateRoutineDto {
   @IsString()
   @IsOptional()
   imageUrl?: string;
+
+
+  @IsString()
+  @IsNotEmpty()
+  goal: string;
+
+  @IsString()
+  @IsNotEmpty()
+  experience: string;
+
+  @IsString()
+  @IsNotEmpty()
+  type: string;
 }

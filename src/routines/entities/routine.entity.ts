@@ -26,4 +26,14 @@ export class Routine {
 
   @Column({ type: 'varchar', length: 255, nullable: true })
   imageUrl: string;
+
+  // Nuevas columnas para la categorización
+  @Column({ type: 'varchar', nullable: true })
+  goal: string;
+
+  @Column({ type: 'varchar', nullable: true })
+  experience: string;
+
+  @Column({ type: 'varchar', nullable: true })
+  type: string; // Para la preferencia de ejercicio (Yoga, HIIT, etc.)
 }
