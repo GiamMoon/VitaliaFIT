@@ -5,6 +5,7 @@ import { CreateRoutineDto } from './dto/create-routine.dto';
 import { UpdateRoutineDto } from './dto/update-routine.dto';
 import { Routine } from './entities/routine.entity';
 import { Exercise } from 'src/exercises/entities/exercise.entity'; // Importar Exercise
+import { User } from 'src/users/entities/user.entity'; // Importar User
 
 @Injectable()
 export class RoutinesService {
@@ -61,5 +62,26 @@ findAll(searchTerm?: string) {
     const routine = await this.findOne(id);
     await this.routineRepository.remove(routine);
     return { message: `Routine with ID #${id} has been removed` };
+  }
+
+  // Nuevo método para encontrar rutinas recomendadas
+  findRecommended(user: User) {
+    // Creamos una lista de términos de búsqueda a partir de las preferencias del usuario
+    const searchTerms = [user.goal, user.experience, user.preferences].filter(Boolean); // Filtra valores null o undefined
+
+    if (searchTerms.length === 0) {
+      // Si no hay preferencias, devuelve las 5 rutinas más recientes como fallback
+      return this.routineRepository.find({
+        order: { id: 'DESC' },
+        take: 5,
+        relations: ['exercises'],
+      });
+    }
+
+    // Busca rutinas donde el nombre contenga CUALQUIERA de los términos de búsqueda
+    return this.routineRepository.find({
+      where: searchTerms.map(term => ({ name: ILike(`%${term}%`) })),
+      relations: ['exercises'],
+    });
   }
 }
